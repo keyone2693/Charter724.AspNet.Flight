@@ -29,6 +29,9 @@ namespace Charter724.AspNet.Flight
 
         Task<Charter724Result<ChReserveFlightResponse>> ReserveFlightAsync(ChReserveFlightRequest chReserveFlightRequest);
 
+        Task<Charter724Result<ChBuyTicketResponse>> BuyTicketAsync(ChBuyTicketRequest chBuyTicketRequest);
+
+
         Task<Charter724Result<GetChargeResponse>> GetChargeAsync();
 
     }

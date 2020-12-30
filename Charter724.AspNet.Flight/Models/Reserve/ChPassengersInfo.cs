@@ -9,9 +9,9 @@ namespace Charter724.AspNet.Flight.Models
     {
         public string fname { get; set; }
         public string lname { get; set; }
-        [Description("ADL  | CHD | INF")]
-        public int type { get; set; }
-        public int real_price { get; set; }
-        public int fare { get; set; }
+        [Description("1:ADL  | 2:CHD | 3:INF")]
+        public string type { get; set; }
+        public double real_price { get; set; }
+        public double fare { get; set; }
     }
 }

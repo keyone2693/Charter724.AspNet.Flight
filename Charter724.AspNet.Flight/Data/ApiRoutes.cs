@@ -22,22 +22,22 @@ namespace Charter724.AspNet.Flight.Data
         {
             internal const string Airports = BaseWebService + "/airportlist";
 
-            internal const string Available = BaseWebService + "available";
+            internal const string Available = BaseWebService + "/available";
 
-            internal const string Available15Days = BaseWebService + "available15days";
+            internal const string Available15Days = BaseWebService + "/available15days";
 
 
         }
         internal static class Ticket
         {
 
-            internal const string Captcha = BaseWebService + "getcaptcha";
+            internal const string Captcha = BaseWebService + "/getcaptcha";
 
-            internal const string Reservation = BaseWebService + "reservation";
+            internal const string Reservation = BaseWebService + "/reservation";
 
-            internal const string Buy = BaseApi + "buyticket";
+            internal const string Buy = BaseWebService + "/buyticket";
 
-            internal const string BuyWithPay = BaseWebService + "payandbuyticket";
+            internal const string BuyWithPay = BaseWebService + "/payandbuyticket";
 
         }
     }

@@ -11,12 +11,12 @@ namespace Charter724.AspNet.Flight.Models
         public int ajency_online_ID { get; set; }
         public string type { get; set; }
         public string displayLable { get; set; }
-        public int price_final { get; set; }
-        public int price_final_chd { get; set; }
-        public int price_final_inf { get; set; }
-        public int price_final_fare { get; set; }
-        public int price_final_chd_fare { get; set; }
-        public int price_final_inf_fare { get; set; }
+        public double price_final { get; set; }
+        public double price_final_chd { get; set; }
+        public double price_final_inf { get; set; }
+        public double price_final_fare { get; set; }
+        public double price_final_chd_fare { get; set; }
+        public double price_final_inf_fare { get; set; }
         public int capacity { get; set; }
         public string from { get; set; }
         public string to { get; set; }
@@ -32,9 +32,9 @@ namespace Charter724.AspNet.Flight.Models
         [Description("YES | NO")]
         public string weelchairsupport { get; set; }
         public string linktosite { get; set; }
-        public int price_Markup { get; set; }
+        public double price_Markup { get; set; }
         [Description("1 = اشتراکی")]
-        public int share_Sale { get; set; }
+        public double share_Sale { get; set; }
         [Description("1 = با توقف")]
         public int has_stop { get; set; }
         public string alarm_msg { get; set; }

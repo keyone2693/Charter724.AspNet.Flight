@@ -6,9 +6,9 @@
     <Description>AspNet nuget package for Charter724 flight webservice based on .netstandard 2+</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>intro_logo.png</PackageIcon>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
     <Authors>KeyVan Abdollazadeh</Authors>
-    <PackageReleaseNotes>first version</PackageReleaseNotes>
+    <PackageReleaseNotes>bug fixes</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/keyone2693/Charter724.AspNet.Flight</PackageProjectUrl>
     <RepositoryUrl>https://github.com/keyone2693/Charter724.AspNet.Flight</RepositoryUrl>
     <RepositoryType>public</RepositoryType>

@@ -1,16 +1,32 @@
 ﻿
 
-using Microsoft.Extensions.DependencyInjection;
+//using Microsoft.Extensions.DependencyInjection;
+
+using Charter724.AspNet.Flight.Data;
+using Charter724.AspNet.Flight.Models;
+using System;
+using System.Collections.Generic;
 
 namespace Charter724.AspNet.Flight.Extentions
 {
-   public static class Common
+    public static class Common
     {
-        public static IServiceCollection AddMadpay724GateWay(this IServiceCollection services)
+        //public static IServiceCollection AddMadpay724GateWay(this IServiceCollection services)
+        //{
+        //    return services.AddScoped<ICharter724Flight, Charter724Flight>();
+        //}
+        public struct Age
         {
-            return services.AddScoped<ICharter724Flight, Charter724Flight>();
+            public readonly int Years;
+            public readonly int Months;
+            public readonly int Days;
+            public Age(int y, int m, int d) : this()
+            {
+                Years = y;
+                Months = m;
+                Days = d;
+            }
         }
-
 
         public static string GetErrorMessage(this int Code)
         {
@@ -74,8 +90,6 @@ namespace Charter724.AspNet.Flight.Extentions
                     return "0";
             }
         }
-
-
         public static string GetErrorMessage(this string Code)
         {
             switch (Code)
@@ -135,7 +149,7 @@ namespace Charter724.AspNet.Flight.Extentions
                 case "-410":
                     return "Time Not Valid";
                 case "-411":
-                    return "Return  No Validated captchcode Recaptcha";
+                    return "-411";
                 case "-412":
                     return "Type Not Suport Just Use This Format ADL/CHD/INF";
                 case "-413":
@@ -191,6 +205,274 @@ namespace Charter724.AspNet.Flight.Extentions
                 default:
                     return "0";
             }
+        }
+        public static bool ToBool(this string res)
+        {
+            if (string.IsNullOrEmpty(res))
+            {
+                return false;
+            }
+            if (res.ToLower() == "true")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public static bool IsAirLine(this string airline, FlightAirline targetAirline)
+        {
+            switch (targetAirline)
+            {
+                case FlightAirline.Aseman:
+                    if (airline.ToLower() == "aseman")
+                        return true;
+                    return false;
+                case FlightAirline.IranAir:
+                    if (airline.ToLower() == "iranair")
+                        return true;
+                    return false;
+                case FlightAirline.Sepehran:
+                    if (airline.ToLower() == "sepehran")
+                        return true;
+                    return false;
+                case FlightAirline.Airtour:
+                    if (airline.ToLower() == "airtour")
+                        return true;
+                    return false;
+                case FlightAirline.Taban:
+                    if (airline.ToLower() == "taban")
+                        return true;
+                    return false;
+                case FlightAirline.Varesh:
+                    if (airline.ToLower() == "varesh")
+                        return true;
+                    return false;
+                case FlightAirline.Mahan:
+                    if (airline.ToLower() == "mahan")
+                        return true;
+                    return false;
+                case FlightAirline.Caspian:
+                    if (airline.ToLower() == "caspian")
+                        return true;
+                    return false;
+                case FlightAirline.Zagros:
+                    if (airline.ToLower() == "zagros")
+                        return true;
+                    return false;
+                case FlightAirline.Gheshm:
+                    if (airline.ToLower() == "qheshm")
+                        return true;
+                    return false;
+                case FlightAirline.Ata:
+                    if (airline.ToLower() == "ata")
+                        return true;
+                    return false;
+                case FlightAirline.FlyPersia:
+                    if (airline.ToLower() == "flypersia")
+                        return true;
+                    return false;
+                case FlightAirline.Saha:
+                    if (airline.ToLower() == "saha")
+                        return true;
+                    return false;
+                default:
+                    return false;
+            }
+        }
+        public static int GetAirLineImgCode(this string airline)
+        {
+            switch (airline.ToLower())
+            {
+                case "aseman":
+                    return 1;
+                case "iranair":
+                    return 2;
+                case "sepehran":
+                    return 3;
+                case "airtour":
+                    return 4;
+                case "taban":
+                    return 5;
+                case "varesh":
+                    return 6;
+                case "mahan":
+                    return 7;
+                case "caspian":
+                    return 8;
+                case "zagros":
+                    return 9;
+                case "qheshm":
+                    return 10;
+                case "ata":
+                    return 11;
+                case "flypersia":
+                    return 12;
+                case "saha":
+                    return 13;
+                default:
+                    return 0;
+            }
+        }
+        public static string GetAirLineImgName(this string airline)
+        {
+            switch (airline.ToLower())
+            {
+                case "aseman":
+                    return "آسمان";
+                case "iranair":
+                    return "ایران ایر";
+                case "sepehran":
+                    return "سپهران";
+                case "airtour":
+                    return "ایران ایر تور";
+                case "taban":
+                    return "تابان";
+                case "varesh":
+                    return "وارش";
+                case "mahan":
+                    return "ماهان";
+                case "caspian":
+                    return "کاسپین";
+                case "zagros":
+                    return "زاگرس";
+                case "qheshm":
+                    return "قشم ایر";
+                case "ata":
+                    return "آتا";
+                case "flypersia":
+                    return "فلای پرشیا";
+                case "saha":
+                    return "ساها";
+                default:
+                    return airline;
+            }
+        }
+        public static string GetFlightTypeName(this string flightType)
+        {
+            switch (flightType.ToLower())
+            {
+                case "economy":
+                    return "اکونومی";
+                case "business":
+                    return "بیزنس";
+                default:
+                    return flightType;
+            }
+        }
+
+        public static string ToAgeType(this DateTime dateTime)
+        {
+            var dt = dateTime.CalculateAge();
+            if (dt.Years <= 1 || (dt.Years == 2 && dt.Months == 0 && dt.Days == 0))
+            {
+                return "INF";
+            }
+            else if ((dt.Years >= 2 && dt.Years < 12) || (dt.Years == 12 && dt.Months == 0 && dt.Days == 0))
+            {
+                return "CHD";
+            }
+            else if (dt.Years > 12 || (dt.Years == 12 && dt.Months > 0 && dt.Days > 0))
+            {
+                return "ADL";
+            }
+            else
+            {
+                return "ADL";
+            }
+        }
+        internal static Age CalculateAge(this DateTime startDate)
+        {
+            var endDate = DateTime.Now;
+            if (startDate.Date > endDate.Date)
+            {
+                return new Age(0, 0, 0);
+            }
+
+            int years = endDate.Year - startDate.Year;
+            int months = 0;
+            int days = 0;
+
+            // Check if the last year, was a full year.
+            if (endDate < startDate.AddYears(years) && years != 0)
+            {
+                years--;
+            }
+
+            // Calculate the number of months.
+            startDate = startDate.AddYears(years);
+
+            if (startDate.Year == endDate.Year)
+            {
+                months = endDate.Month - startDate.Month;
+            }
+            else
+            {
+                months = (12 - startDate.Month) + endDate.Month;
+            }
+
+            // Check if last month was a complete month.
+            if (endDate < startDate.AddMonths(months) && months != 0)
+            {
+                months--;
+            }
+
+            // Calculate the number of days.
+            startDate = startDate.AddMonths(months);
+
+            days = (endDate - startDate).Days;
+
+            return new Age(years, months, days);
+        }
+
+
+        public static IEnumerable<ChPassengers> ToCharterGender(this IEnumerable<ChPassengers> passengers, ChAvailableFlight availableSeat)
+        {
+            var ChPassengers = new List<ChPassengers>();
+            foreach (var pas in passengers)
+            {
+                
+                ChPassengers.Add(new ChPassengers
+                {
+                    passengerType = availableSeat.type == "economy" || availableSeat.type == "charter" ? "ADL" : pas.passengerType,
+                    fnamefa = pas.fnamefa,
+                    lnamefa = pas.lnamefa,
+                    fnameen = pas.fnameen,
+                    lnameen = pas.lnameen,
+                    gender = pas.gender,
+                    nationality = 1,
+                    passengerCode = pas.passengerCode,
+                    nationalitycode = pas.nationalitycode,
+                    expdate = pas.expdate,
+                    birthday = pas.birthday,
+                });
+            }
+            return ChPassengers;
+        }
+
+        public static IEnumerable<ChPassengers> ToCharterGender(this IEnumerable<ChPassengers> passengers, string type)
+        {
+            var ChPassengers = new List<ChPassengers>();
+            foreach (var pas in passengers)
+            {
+
+                ChPassengers.Add(new ChPassengers
+                {
+                    passengerType = type == "economy" || type == "charter" ? "ADL" : pas.passengerType,
+                    fnamefa = pas.fnamefa,
+                    lnamefa = pas.lnamefa,
+                    fnameen = pas.fnameen,
+                    lnameen = pas.lnameen,
+                    gender = pas.gender,
+                    nationality = 1,
+                    passengerCode = pas.passengerCode,
+                    nationalitycode = pas.nationalitycode,
+                    expdate = pas.expdate,
+                    birthday = pas.birthday,
+                });
+            }
+            return ChPassengers;
         }
 
     }

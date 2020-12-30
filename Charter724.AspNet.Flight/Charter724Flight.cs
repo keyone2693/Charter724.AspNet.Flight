@@ -10,6 +10,8 @@ using Charter724.AspNet.Flight.Extentions;
 using Charter724.AspNet.Flight.Models.Flight;
 using Charter724.AspNet.Flight.Models.Auth;
 using Charter724.AspNet.Flight.Models.Reserve;
+using System.Net;
+using Charter724.AspNet.Flight.Models.Ticket;
 
 namespace Charter724.AspNet.Flight
 {
@@ -35,16 +37,26 @@ namespace Charter724.AspNet.Flight
 
 
             _response = await _http.GetAsync(ApiRoutes.Auth.ShowMyIP);
-
+            if (_response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                var res = JsonConvert.DeserializeObject<ServiceResult<dynamic>>(await _response.Content.ReadAsStringAsync());
+                var err = res.msg.GetErrorMessage();
+                return new Charter724Result<string>
+                {
+                    Status = false,
+                    Messages = err != "0" ? err : res.msg,
+                    Result = null
+                };
+            }
             if (_response.IsSuccessStatusCode)
             {
                 var res = JsonConvert.DeserializeObject<ServiceResult<string>>(await _response.Content.ReadAsStringAsync());
 
-                if (res.result)
+                if (res.result.ToBool())
                 {
                     return new Charter724Result<string>
                     {
-                        Status = res.result,
+                        Status = res.result.ToBool(),
                         Messages = null,
                         Result = res.data
                     };
@@ -78,17 +90,27 @@ namespace Charter724.AspNet.Flight
             _content = new StringContent(
                 JsonConvert.SerializeObject(chUserPassBase64Request), UTF8Encoding.UTF8, "application/json");
 
-            _response = await _http.PostAsync(ApiRoutes.Auth.Login, _content);
-
+            _response = await _http.PostAsync(ApiRoutes.Auth.UserPassBase64, _content);
+            if (_response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                var res = JsonConvert.DeserializeObject<ServiceResult<dynamic>>(await _response.Content.ReadAsStringAsync());
+                var err = res.msg.GetErrorMessage();
+                return new Charter724Result<string>
+                {
+                    Status = false,
+                    Messages = err != "0" ? err : res.msg,
+                    Result = null
+                };
+            }
             if (_response.IsSuccessStatusCode)
             {
                 var res = JsonConvert.DeserializeObject<ServiceResult<string>>(await _response.Content.ReadAsStringAsync());
 
-                if (res.result)
+                if (res.result.ToBool())
                 {
                     return new Charter724Result<string>
                     {
-                        Status = res.result,
+                        Status = res.result.ToBool(),
                         Messages = null,
                         Result = res.data
                     };
@@ -123,16 +145,26 @@ namespace Charter724.AspNet.Flight
                 JsonConvert.SerializeObject(chLoginRequest), UTF8Encoding.UTF8, "application/json");
 
             _response = await _http.PostAsync(ApiRoutes.Auth.Login, _content);
-
+            if (_response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                var res = JsonConvert.DeserializeObject<ServiceResult<dynamic>>(await _response.Content.ReadAsStringAsync());
+                var err = res.msg.GetErrorMessage();
+                return new Charter724Result<ChLoginResponse>
+                {
+                    Status = false,
+                    Messages = err != "0" ? err : res.msg,
+                    Result = null
+                };
+            }
             if (_response.IsSuccessStatusCode)
             {
                 var res = JsonConvert.DeserializeObject<ServiceResult<ChLoginResponse>>(await _response.Content.ReadAsStringAsync());
 
-                if (res.result)
+                if (res.result.ToBool())
                 {
                     return new Charter724Result<ChLoginResponse>
                     {
-                        Status = res.result,
+                        Status = res.result.ToBool(),
                         Messages = null,
                         Result = res.data
                     };
@@ -166,15 +198,25 @@ namespace Charter724.AspNet.Flight
             _http.DefaultRequestHeaders.Add("Authorization", Constants.PreToken + chGetAirportsRequest.Token.Trim());
 
             _response = await _http.GetAsync(ApiRoutes.Flight.Airports);
-
+            if (_response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                var res = JsonConvert.DeserializeObject<ServiceResult<dynamic>>(await _response.Content.ReadAsStringAsync());
+                var err = res.msg.GetErrorMessage();
+                return new Charter724Result<IEnumerable<ChGetAirportsResponse>>
+                {
+                    Status = false,
+                    Messages = err != "0" ? err : res.msg,
+                    Result = null
+                };
+            }
             if (_response.IsSuccessStatusCode)
             {
                 var res = JsonConvert.DeserializeObject<ServiceResult<IEnumerable<ChGetAirportsResponse>>>(await _response.Content.ReadAsStringAsync());
-                if (res.result)
+                if (res.result.ToBool())
                 {
                     return new Charter724Result<IEnumerable<ChGetAirportsResponse>>
                     {
-                        Status = res.result,
+                        Status = res.result.ToBool(),
                         Messages = null,
                         Result = res.data
                     };
@@ -209,15 +251,25 @@ namespace Charter724.AspNet.Flight
                 JsonConvert.SerializeObject(chAvailableFlightRequest), UTF8Encoding.UTF8, "application/json");
 
             _response = await _http.PostAsync(ApiRoutes.Flight.Available15Days, _content);
-
+            if (_response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                var res = JsonConvert.DeserializeObject<ServiceResult<dynamic>>(await _response.Content.ReadAsStringAsync());
+                var err = res.msg.GetErrorMessage();
+                return new Charter724Result<IEnumerable<ChAvailable15DaysFlightResponse>>
+                {
+                    Status = false,
+                    Messages = err != "0" ? err : res.msg,
+                    Result = null
+                };
+            }
             if (_response.IsSuccessStatusCode)
             {
                 var res = JsonConvert.DeserializeObject<ServiceResult<IEnumerable<ChAvailable15DaysFlightResponse>>>(await _response.Content.ReadAsStringAsync());
-                if (res.result)
+                if (res.result.ToBool())
                 {
                     return new Charter724Result<IEnumerable<ChAvailable15DaysFlightResponse>>
                     {
-                        Status = res.result,
+                        Status = res.result.ToBool(),
                         Messages = null,
                         Result = res.data
                     };
@@ -263,22 +315,34 @@ namespace Charter724.AspNet.Flight
                     to_flight = chAvailableFlightRequest.to,
                     date_flight = chAvailableFlightRequest.goinDate.Year + "-" +
                            chAvailableFlightRequest.goinDate.Month + "-" +
-                           chAvailableFlightRequest.goinDate.Day + "-"
+                           chAvailableFlightRequest.goinDate.Day
                 };
                 _content = new StringContent(
                         JsonConvert.SerializeObject(req), UTF8Encoding.UTF8, "application/json");
 
                 _response = await _http.PostAsync(ApiRoutes.Flight.Available, _content);
+                if (_response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    var res = JsonConvert.DeserializeObject<ServiceResult<dynamic>>(await _response.Content.ReadAsStringAsync());
+                    var err = res.msg.GetErrorMessage();
+                    return new Charter724Result<ChFlightAvailableResponse>
+                    {
+                        Status = false,
+                        Messages = err != "0" ? err : res.msg,
+                        Result = null
+                    };
+                }
                 if (_response.IsSuccessStatusCode)
                 {
-                    var res = JsonConvert.DeserializeObject<ServiceResult<IEnumerable<ChAvailableFlight>>>(await _response.Content.ReadAsStringAsync());
+                    var str = await _response.Content.ReadAsStringAsync();
+                    var res = JsonConvert.DeserializeObject<ServiceResult<IEnumerable<ChAvailableFlight>>>(str);
 
-                    if (res.result)
+                    if (res.result.ToBool())
                     {
                         mainRes.GoingResults = res.data;
                         return new Charter724Result<ChFlightAvailableResponse>
                         {
-                            Status = res.result,
+                            Status = res.result.ToBool(),
                             Messages = null,
                             Result = mainRes
                         };
@@ -295,6 +359,7 @@ namespace Charter724.AspNet.Flight
                     }
                 }
                 {
+                    var aa = await _response.Content.ReadAsStringAsync();
                     return new Charter724Result<ChFlightAvailableResponse>
                     {
                         Status = false,
@@ -311,42 +376,63 @@ namespace Charter724.AspNet.Flight
                     to_flight = chAvailableFlightRequest.to,
                     date_flight = chAvailableFlightRequest.goinDate.Year + "-" +
            chAvailableFlightRequest.goinDate.Month + "-" +
-           chAvailableFlightRequest.goinDate.Day + "-",
+           chAvailableFlightRequest.goinDate.Day,
                 };
                 _content = new StringContent(
                         JsonConvert.SerializeObject(req), UTF8Encoding.UTF8, "application/json");
                 _response = await _http.PostAsync(ApiRoutes.Flight.Available, _content);
+                if (_response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    var res = JsonConvert.DeserializeObject<ServiceResult<dynamic>>(await _response.Content.ReadAsStringAsync());
+                    var err = res.msg.GetErrorMessage();
+                    return new Charter724Result<ChFlightAvailableResponse>
+                    {
+                        Status = false,
+                        Messages = err != "0" ? err : res.msg,
+                        Result = null
+                    };
+                }
                 if (_response.IsSuccessStatusCode)
                 {
                     var res = JsonConvert.DeserializeObject<ServiceResult<IEnumerable<ChAvailableFlight>>>(await _response.Content.ReadAsStringAsync());
-                    if (res.result)
+                    if (res.result.ToBool())
                     {
                         mainRes.GoingResults = res.data;
 
-                        _http.DefaultRequestHeaders.Clear();
                         var reqReturn = new AvailableFlightRequest
                         {
-                            from_flight = chAvailableFlightRequest.from,
-                            to_flight = chAvailableFlightRequest.to,
+                            from_flight = chAvailableFlightRequest.to,
+                            to_flight = chAvailableFlightRequest.from,
                             date_flight = chAvailableFlightRequest.returnDate.Year + "-" +
                                    chAvailableFlightRequest.returnDate.Month + "-" +
-                                   chAvailableFlightRequest.returnDate.Day + "-",
+                                   chAvailableFlightRequest.returnDate.Day,
                         };
                         _content = new StringContent(
                                 JsonConvert.SerializeObject(reqReturn), UTF8Encoding.UTF8, "application/json");
 
                         _response = await _http.PostAsync(ApiRoutes.Flight.Available, _content);
+                        if (_response.StatusCode == HttpStatusCode.BadRequest)
+                        {
+                            var resd = JsonConvert.DeserializeObject<ServiceResult<dynamic>>(await _response.Content.ReadAsStringAsync());
+                            var err = resd.msg.GetErrorMessage();
+                            return new Charter724Result<ChFlightAvailableResponse>
+                            {
+                                Status = false,
+                                Messages = err != "0" ? err : resd.msg,
+                                Result = null
+                            };
+                        }
                         if (_response.IsSuccessStatusCode)
                         {
                             var resReturn = JsonConvert.DeserializeObject<ServiceResult<IEnumerable<ChAvailableFlight>>>(await _response.Content.ReadAsStringAsync());
 
-                            if (resReturn.result)
+                            if (resReturn.result.ToBool())
                             {
-                                mainRes.GoingResults = resReturn.data;
+                                mainRes.ReturnResults = resReturn.data;
 
                                 return new Charter724Result<ChFlightAvailableResponse>
                                 {
-                                    Status = res.result,
+                                    Status = res.result.ToBool(),
                                     Messages = null,
                                     Result = mainRes
                                 };
@@ -407,15 +493,25 @@ namespace Charter724.AspNet.Flight
                 JsonConvert.SerializeObject(chCaptchaFlightRequest), UTF8Encoding.UTF8, "application/json");
 
             _response = await _http.PostAsync(ApiRoutes.Ticket.Captcha, _content);
-
+            if (_response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                var res = JsonConvert.DeserializeObject<ServiceResult<dynamic>>(await _response.Content.ReadAsStringAsync());
+                var err = res.msg.GetErrorMessage();
+                return new Charter724Result<ChCaptchaFlightResponse>
+                {
+                    Status = false,
+                    Messages = err != "0" ? err : res.msg,
+                    Result = null
+                };
+            }
             if (_response.IsSuccessStatusCode)
             {
                 var res = JsonConvert.DeserializeObject<ServiceResult<ChCaptchaFlightResponse>>(await _response.Content.ReadAsStringAsync());
-                if (res.result)
+                if (res.result.ToBool())
                 {
                     return new Charter724Result<ChCaptchaFlightResponse>
                     {
-                        Status = res.result,
+                        Status = res.result.ToBool(),
                         Messages = null,
                         Result = res.data
                     };
@@ -452,14 +548,25 @@ namespace Charter724.AspNet.Flight
 
             _response = await _http.PostAsync(ApiRoutes.Ticket.Reservation, _content);
 
+            if (_response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                var res = JsonConvert.DeserializeObject<ServiceResult<dynamic>>(await _response.Content.ReadAsStringAsync());
+                var err = res.msg.GetErrorMessage();
+                return new Charter724Result<ChReserveFlightResponse>
+                {
+                    Status = false,
+                    Messages = err != "0" ? err : res.msg,
+                    Result = null
+                };
+            }
             if (_response.IsSuccessStatusCode)
             {
                 var res = JsonConvert.DeserializeObject<ServiceResult<ChReserveFlightResponse>>(await _response.Content.ReadAsStringAsync());
-                if (res.result)
+                if (res.result.ToBool())
                 {
                     return new Charter724Result<ChReserveFlightResponse>
                     {
-                        Status = res.result,
+                        Status = res.result.ToBool(),
                         Messages = null,
                         Result = res.data
                     };
@@ -495,31 +602,135 @@ namespace Charter724.AspNet.Flight
                 JsonConvert.SerializeObject(chBuyTicketRequest), UTF8Encoding.UTF8, "application/json");
 
             _response = await _http.PostAsync(ApiRoutes.Ticket.Buy, _content);
-
+            if (_response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                var res = JsonConvert.DeserializeObject<ServiceResult<dynamic>>(await _response.Content.ReadAsStringAsync());
+                var err = res.msg.GetErrorMessage();
+                return new Charter724Result<ChBuyTicketResponse>
+                {
+                    Status = false,
+                    Messages = err != "0" ? err : res.msg,
+                    Result = null
+                };
+            }
             if (_response.IsSuccessStatusCode)
             {
                 var res = JsonConvert.DeserializeObject<ServiceResult<ChBuyTicketResponse>>(await _response.Content.ReadAsStringAsync());
-                if (res.result)
+
+                if (res.data.pnrid_request == "98" || res.data.pnrid_request == "101" || res.data.pnrid_request == "110" || res.data.pnrid_request == "112")
                 {
-                    return new Charter724Result<ChBuyTicketResponse>
+                    #region try
+                    _response = await _http.PostAsync(ApiRoutes.Ticket.Buy, _content);
+                    if (_response.IsSuccessStatusCode)
                     {
-                        Status = res.result,
-                        Messages = null,
-                        Result = res.data
-                    };
+                        res = JsonConvert.DeserializeObject<ServiceResult<ChBuyTicketResponse>>(await _response.Content.ReadAsStringAsync());
+                        if (res.data.pnrid_request == "98" || res.data.pnrid_request == "101" || res.data.pnrid_request == "110" || res.data.pnrid_request == "112")
+                        {
+                            _response = await _http.PostAsync(ApiRoutes.Ticket.Buy, _content);
+                            if (_response.IsSuccessStatusCode)
+                            {
+                                res = JsonConvert.DeserializeObject<ServiceResult<ChBuyTicketResponse>>(await _response.Content.ReadAsStringAsync());
+                                if (res.data.pnrid_request == "98" || res.data.pnrid_request == "101" || res.data.pnrid_request == "110" || res.data.pnrid_request == "112")
+                                {
+                                    return new Charter724Result<ChBuyTicketResponse>
+                                    {
+                                        Status = false,
+                                        Messages = "خطا در ثبت بلیط",
+                                        Result = null
+                                    };
+                                }
+                                else
+                                {
+                                    if (res.result.ToBool())
+                                    {
+                                        return new Charter724Result<ChBuyTicketResponse>
+                                        {
+                                            Status = res.result.ToBool(),
+                                            Messages = null,
+                                            Result = res.data
+                                        };
+                                    }
+                                    else
+                                    {
+                                        var err = res.msg.GetErrorMessage();
+                                        return new Charter724Result<ChBuyTicketResponse>
+                                        {
+                                            Status = false,
+                                            Messages = err != "0" ? err : res.msg,
+                                            Result = null
+                                        };
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                return new Charter724Result<ChBuyTicketResponse>
+                                {
+                                    Status = false,
+                                    Messages = await _response.Content.ReadAsStringAsync(),
+                                    Result = null
+                                };
+                            }
+                        }
+                        else
+                        {
+                            if (res.result.ToBool())
+                            {
+                                return new Charter724Result<ChBuyTicketResponse>
+                                {
+                                    Status = res.result.ToBool(),
+                                    Messages = null,
+                                    Result = res.data
+                                };
+                            }
+                            else
+                            {
+                                var err = res.msg.GetErrorMessage();
+                                return new Charter724Result<ChBuyTicketResponse>
+                                {
+                                    Status = false,
+                                    Messages = err != "0" ? err : res.msg,
+                                    Result = null
+                                };
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return new Charter724Result<ChBuyTicketResponse>
+                        {
+                            Status = false,
+                            Messages = await _response.Content.ReadAsStringAsync(),
+                            Result = null
+                        };
+                    }
+
+                    #endregion
                 }
                 else
                 {
-                    var err = res.msg.GetErrorMessage();
-                    return new Charter724Result<ChBuyTicketResponse>
+                    if (res.result.ToBool())
                     {
-                        Status = false,
-                        Messages = err != "0" ? err : res.msg,
-                        Result = null
-                    };
+                        return new Charter724Result<ChBuyTicketResponse>
+                        {
+                            Status = res.result.ToBool(),
+                            Messages = null,
+                            Result = res.data
+                        };
+                    }
+                    else
+                    {
+                        var err = res.msg.GetErrorMessage();
+                        return new Charter724Result<ChBuyTicketResponse>
+                        {
+                            Status = false,
+                            Messages = err != "0" ? err : res.msg,
+                            Result = null
+                        };
+                    }
                 }
-
             }
+            else
             {
                 return new Charter724Result<ChBuyTicketResponse>
                 {
@@ -530,20 +741,31 @@ namespace Charter724.AspNet.Flight
             }
         }
 
-        public async Task<Charter724Result<GetChargeResponse>> GetChargeAsync( )
+
+        public async Task<Charter724Result<GetChargeResponse>> GetChargeAsync()
         {
             _http.DefaultRequestHeaders.Clear();
 
             _response = await _http.GetAsync(ApiRoutes.Auth.GetCharge);
-
+            if (_response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                var res = JsonConvert.DeserializeObject<ServiceResult<dynamic>>(await _response.Content.ReadAsStringAsync());
+                var err = res.msg.GetErrorMessage();
+                return new Charter724Result<GetChargeResponse>
+                {
+                    Status = false,
+                    Messages = err != "0" ? err : res.msg,
+                    Result = null
+                };
+            }
             if (_response.IsSuccessStatusCode)
             {
                 var res = JsonConvert.DeserializeObject<ServiceResult<GetChargeResponse>>(await _response.Content.ReadAsStringAsync());
-                if (res.result)
+                if (res.result.ToBool())
                 {
                     return new Charter724Result<GetChargeResponse>
                     {
-                        Status = res.result,
+                        Status = res.result.ToBool(),
                         Messages = null,
                         Result = res.data
                     };
@@ -571,6 +793,7 @@ namespace Charter724.AspNet.Flight
         }
 
         #endregion
+
 
         #region Dispose
         private bool disposed = false;

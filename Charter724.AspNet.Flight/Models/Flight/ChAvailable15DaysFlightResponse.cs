@@ -11,7 +11,7 @@ namespace Charter724.AspNet.Flight.Models
         public string type { get; set; }
         [Description("چارتر | سیستمی")]
         public string displayLable { get; set; }
-        public int price_final { get; set; }
+        public double price_final { get; set; }
         public int capacity { get; set; }
         public string from { get; set; }
         public string to { get; set; }
@@ -26,7 +26,7 @@ namespace Charter724.AspNet.Flight.Models
         public string cabinclass { get; set; }
         public string roW_NUM2 { get; set; }
         public string linktositeallflight { get; set; }
-        public int price_Markup { get; set; }
+        public double price_Markup { get; set; }
         [Description("1 = اشتراکی")]
         public int share_Sale { get; set; }
         [Description("1 = با توقف")]

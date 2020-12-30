@@ -6,7 +6,7 @@ namespace Charter724.AspNet.Flight.Models
 {
     public class ChBuyTicketRequest : BaseModel
     {
-        public int id_request { get; set; }
-        public int id_faktor { get; set; }
+        public long id_request { get; set; }
+        public long id_faktor { get; set; }
     }
 }
